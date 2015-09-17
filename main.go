@@ -89,7 +89,7 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	jsonFmt := `{ "North" : %d, "South" : %d, "East"  : %d, "West"  : %d }`
+	jsonFmt := `{"north":%d, "south":%d, "east":%d, "west":%d}`
 	jsonData := fmt.Sprintf(jsonFmt, reading("rNO", data), reading("rSO", data), reading("rEA", data), reading("rWE", data))
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jsonData))
