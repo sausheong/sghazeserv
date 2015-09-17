@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -34,6 +34,7 @@ func main() {
 
 	http.HandleFunc("/psi", allReadings)
 	http.HandleFunc("/psi/region", region)
+	http.HandleFunc("/psi/region/all", allRegions)
 	server.ListenAndServe()
 }
 
@@ -80,6 +81,18 @@ func region(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte(strconv.Itoa(reading(region, data))))
+}
+
+func allRegions(w http.ResponseWriter, r *http.Request) {
+	data, err := grabData()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	jsonFmt := `{ "North" : %d, "South" : %d, "East"  : %d, "West"  : %d }`
+	jsonData := fmt.Sprintf(jsonFmt, reading("rNO", data), reading("rSO", data), reading("rEA", data), reading("rWE", data))
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(jsonData))
 }
 
 // extract the PSI from the JSON
