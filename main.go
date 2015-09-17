@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -27,13 +28,12 @@ var psiUrl string
 
 func main() {
 	server := http.Server{
-		Addr: ":8080",
+		Addr: ":" + os.Getenv("PORT"),
 	}
 	psiUrl = "http://www.nea.gov.sg/api/WebAPI/?dataset=psi_update&keyref=781CF461BB6606AD0308169EFFAA82316F750CA80D381E25"
 
 	http.HandleFunc("/psi", allReadings)
 	http.HandleFunc("/psi/region", region)
-	fmt.Println("sghazeserv 0.1")
 	server.ListenAndServe()
 }
 
