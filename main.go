@@ -92,7 +92,7 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	jsonFmt := `
 {
 	"readings":{
-		"overall",%d,
+		"overall":%d,
 		"north":%d, 
 		"south":%d, 
 		"east":%d, 
