@@ -92,6 +92,7 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	jsonFmt := `
 {
 	"readings":{
+		"overall",%d,
 		"north":%d, 
 		"south":%d, 
 		"east":%d, 
@@ -99,6 +100,7 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 		"center":%d
 	},
 	"descriptors":{
+		"overall":"%s",
 		"north":"%s", 
 		"south":"%s", 
 		"east":"%s", 
@@ -107,10 +109,12 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 `
-	north, south, east, west, center := reading("rNO", data), reading("rSO", data),
-		reading("rEA", data), reading("rWE", data), reading("rCE", data)
-	jsonData := fmt.Sprintf(jsonFmt, north, south, east, west, center,
-		describe(north), describe(south), describe(east), describe(west), describe(center))
+	overall, north, south, east, west, center := reading("NRS", data),
+		reading("rNO", data), reading("rSO", data), reading("rEA", data),
+		reading("rWE", data), reading("rCE", data)
+	jsonData := fmt.Sprintf(jsonFmt, overall, north, south, east, west,
+		center, describe(overall), describe(north), describe(south),
+		describe(east), describe(west), describe(center))
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jsonData))
