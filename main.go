@@ -89,8 +89,29 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	jsonFmt := `{"north":%d, "south":%d, "east":%d, "west":%d, "center":%d}`
-	jsonData := fmt.Sprintf(jsonFmt, reading("rNO", data), reading("rSO", data), reading("rEA", data), reading("rWE", data), reading("rCE", data))
+	jsonFmt := `
+{
+	"readings":{
+		"north":%d, 
+		"south":%d, 
+		"east":%d, 
+		"west":%d, 
+		"center":%d
+	},
+	"descriptors":{
+		"north":"%s", 
+		"south":"%s", 
+		"east":"%s", 
+		"west":"%s", 
+		"center":"%s"
+	}
+}
+`
+	north, south, east, west, center := reading("rNO", data), reading("rSO", data),
+		reading("rEA", data), reading("rWE", data), reading("rCE", data)
+	jsonData := fmt.Sprintf(jsonFmt, north, south, east, west, center,
+		describe(north), describe(south), describe(east), describe(west), describe(center))
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jsonData))
 }
@@ -100,11 +121,27 @@ func reading(region string, data Data) int {
 	for _, reg := range data.Regions {
 		if reg.Id == region {
 			for _, reading := range reg.Readings {
-				if reading.Type == "NPSI" {
+				if reading.Type == "NPSI_PM25_3HR" {
 					return reading.Value
 				}
 			}
 		}
 	}
 	return 0
+}
+
+func describe(psi int) string {
+	switch {
+	case psi <= 50:
+		return "Good"
+	case psi <= 100:
+		return "Moderate"
+	case psi <= 200:
+		return "Unhealthy"
+	case psi <= 300:
+		return "Very Unhealthy"
+	case psi > 300:
+		return "Hazardous"
+	}
+	return ""
 }
