@@ -28,6 +28,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Data struct {
@@ -35,8 +36,15 @@ type Data struct {
 }
 
 type Region struct {
-	Id       string    `xml:"id"`
-	Readings []Reading `xml:"record>reading"`
+	Id     string     `xml:"id"`
+	Lat    string     `xml:"latitude"`
+	Long   string     `xml:"longitude"`
+	Record RecordData `xml:"record"`
+}
+
+type RecordData struct {
+	Timestamp string    `xml:"timestamp,attr"`
+	Readings  []Reading `xml:"reading"`
 }
 
 type Reading struct {
@@ -46,11 +54,13 @@ type Reading struct {
 
 var psiUrl string
 
+func init() {
+	psiUrl = "http://www.nea.gov.sg/api/WebAPI/?dataset=psi_update&keyref=781CF461BB6606AD0308169EFFAA82316F750CA80D381E25"
+}
 func main() {
 	server := http.Server{
 		Addr: ":" + os.Getenv("PORT"),
 	}
-	psiUrl = "http://www.nea.gov.sg/api/WebAPI/?dataset=psi_update&keyref=781CF461BB6606AD0308169EFFAA82316F750CA80D381E25"
 
 	http.HandleFunc("/psi", allReadings)
 	http.HandleFunc("/psi/region", region)
@@ -112,6 +122,7 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	}
 	jsonFmt := `
 {
+	"last_updated": "%s",
 	"readings":{
 		"overall":%d,
 		"north":%d, 
@@ -133,7 +144,8 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	overall, north, south, east, west, center := reading("NRS", data),
 		reading("rNO", data), reading("rSO", data), reading("rEA", data),
 		reading("rWE", data), reading("rCE", data)
-	jsonData := fmt.Sprintf(jsonFmt, overall, north, south, east, west,
+	time := timestamp(data)
+	jsonData := fmt.Sprintf(jsonFmt, time, overall, north, south, east, west,
 		center, describe(overall), describe(north), describe(south),
 		describe(east), describe(west), describe(center))
 
@@ -141,11 +153,21 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(jsonData))
 }
 
+func timestamp(data Data) string {
+	for _, reg := range data.Regions {
+		if reg.Id == "NRS" {
+			t,_ := time.Parse("20060102150400", reg.Record.Timestamp)
+			return t.Format("3:04pm Jan 2, 2006")
+		}
+	}
+	return "Not found"
+}
+
 // extract the PSI from the JSON
 func reading(region string, data Data) int {
 	for _, reg := range data.Regions {
 		if reg.Id == region {
-			for _, reading := range reg.Readings {
+			for _, reading := range reg.Record.Readings {
 				if reading.Type == "NPSI_PM25_3HR" {
 					return reading.Value
 				}
