@@ -264,5 +264,5 @@ var Region = React.createClass({
 });
 
 React.render(
-  <Reading url="/psi/region/all" pollInterval={10000000} />, document.getElementById('content')
+  <Reading url="/psi/region/all" pollInterval={1000} />, document.getElementById('content')
 );
