@@ -62,6 +62,8 @@ func main() {
 		Addr: ":" + os.Getenv("PORT"),
 	}
 
+	files := http.FileServer(http.Dir("public"))
+	http.Handle("/public/", http.StripPrefix("/public/", files))
 	http.HandleFunc("/psi", allReadings)
 	http.HandleFunc("/psi/region", region)
 	http.HandleFunc("/psi/region/all", allRegions)
@@ -114,6 +116,7 @@ func region(w http.ResponseWriter, r *http.Request) {
 }
 
 // get PSI readings and descriptors for all regions, in JSON
+// this is the route used in the Pebble watch app
 func allRegions(w http.ResponseWriter, r *http.Request) {
 	data, err := grabData()
 	if err != nil {
@@ -153,6 +156,7 @@ func allRegions(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(jsonData))
 }
 
+// get the timestamp of the given data
 func timestamp(data Data) string {
 	for _, reg := range data.Regions {
 		if reg.Id == "NRS" {
