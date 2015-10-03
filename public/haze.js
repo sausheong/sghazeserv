@@ -198,6 +198,36 @@ var Map = React.createClass({
     this.setState({map: map});
   },
 
+  componentWillReceiveProps: function() {
+    if (this.state.map != null) {
+        var that = this;
+        if (typeof this.state.layer !== 'undefined') {
+          this.state.map.removeLayer(this.state.layer);
+        }
+        var layer = L.geoJson(this.state.states, {
+            style: function(feature) {
+                var region = feature.properties.region.toLowerCase();
+                return {
+                    color: that._getColor(that.props.data.readings[region]),
+                    weight: 2,
+                    opacity: 1,
+                    dashArray: '3',
+                    fillOpacity: 0.2
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                var region = feature.properties.region.toLowerCase();
+                that.state[region].setContent("<div class='psi'>" + that.props.data.readings[region] + "</div>");
+                that.state[region].setLatLng(layer.getBounds().getCenter());
+                if (that.state.map != null)
+                    that.state.map.showLabel(that.state[region]);
+            }
+        });
+        layer.addTo(this.state.map);
+        this.setState({layer: layer});
+    }
+  },
+
   _getColor: function( reading ) {
     var color;
     switch(true) {
@@ -221,28 +251,6 @@ var Map = React.createClass({
   },
 
   render: function(){
-    if (this.state.map != null) {
-        var that = this;
-        L.geoJson(this.state.states, {
-        style: function(feature) {
-          var region = feature.properties.region.toLowerCase();
-          return {
-            color: that._getColor(that.props.data.readings[region]),
-            weight: 2,
-            opacity: 1,
-            dashArray: '3',
-            fillOpacity: 0.2
-          }
-        },
-        onEachFeature: function (feature, layer) {
-          var region = feature.properties.region.toLowerCase();
-          that.state[region].setContent("<div class='psi'>" + that.props.data.readings[region] + "</div>");
-          that.state[region].setLatLng(layer.getBounds().getCenter());
-          if (that.state.map != null)
-              that.state.map.showLabel(that.state[region]);
-        }
-      }).addTo(this.state.map);
-    }
       return (
           <div>
             <div id="map">
