@@ -14,4 +14,8 @@ It is also built to support the Singapore Haze Watch Pebble app (and other simil
 
 Source code for Pebble app is at https://github.com/sausheong/sghaze.
 
+The server is hosted at Heroku at https://sghazeserv.herokuapp.com
+
+I have also built a React.js front-end for the server at https://sghazeserv.herokuapp.com/public/
+
 Both the Pebble app and the SG Haze Watch Server are licensed under the MIT license. 

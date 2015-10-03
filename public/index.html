@@ -34,30 +34,42 @@
        text-align: center; 
        width: 100%; 
      }
-     .col-left {       
+     .left {       
        float: left;
        width: 33%;
        padding-top: 10px;
        font-size: 2.5em;
      }
-     .col-right {       
+     .right {       
        float: right;
        width: 33%;
        padding-top: 10px;
        font-size: 2.5em;
      }
 
-     .col-center {       
+     .center {       
        display: inline-block;
        width: 33%;
        padding-top: 10px;
        font-size: 2.5em;
      }
-
+     #footer {
+         position: fixed;
+         bottom: 10px;
+         width: 100%;
+         text-align: center;
+     }
+     .descriptor {
+       font-size: 0.4em;
+     }
+     .date {
+       font-size: 0.2em;
+     }
     </style>
   </head>
   <body>
     <div class="row" id="content"></div>    
-    <script type="text/babel" src="haze.js"></script>    
+    <script type="text/babel" src="haze.js"></script> 
+    <small id="footer"><a href="https://github.com/sausheong/sghazeserv">Singapore Haze Watch</a> by <a href="https://github.com/sausheong">Chang Sau Sheong</a>   
   </body>
 </html>

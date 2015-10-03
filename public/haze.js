@@ -64,8 +64,8 @@ var Reading = React.createClass({
   render: function() {
     return ( 
       <div className="reading">
-        <PSI data={ this.state.data.readings }/>
-        <Map data={ this.state.data.readings }/>
+        <PSI data={ this.state.data }/>
+        <Map data={ this.state.data }/>
       </div>
     );
   }
@@ -73,11 +73,12 @@ var Reading = React.createClass({
 
 var PSI = React.createClass({
   render: function() {
-    var psi = this.props.data.overall;
    return (
       <div className="psi">     
-         { psi }
+         { this.props.data.readings.overall }         
+         <div className="date">{ this.props.data.last_updated }</div>
       </div>
+              
    ); 
   }  
 });
@@ -87,23 +88,34 @@ var Map = React.createClass({
       return (
         <div className="map">
           <div className="row">
-            <div className="col-left">&nbsp;</div>
-            <div className="col-center">{ this.props.data.north }</div>
-            <div className="col-right">&nbsp;</div>
+            <div className="left">&nbsp;</div>
+            <Region alignment="center" reading={this.props.data.readings.north} descriptor={ this.props.data.descriptors.north }/>
+            <div className="right">&nbsp;</div>
           </div>
           <div className="row">
-            <div className="col-left">{ this.props.data.west }</div>
-            <div className="col-center">{ this.props.data.center }</div>
-            <div className="col-right">{ this.props.data.east }</div>
+            <Region alignment="left" reading={this.props.data.readings.west} descriptor={ this.props.data.descriptors.west }/>
+            <Region alignment="center" reading={this.props.data.readings.center} descriptor={ this.props.data.descriptors.center }/>
+            <Region alignment="right" reading={this.props.data.readings.east} descriptor={ this.props.data.descriptors.east }/>
           </div>
           <div className="row">
-            <div className="col-left">&nbsp;</div>
-            <div className="col-center">{ this.props.data.south }</div>
-            <div className="col-right">&nbsp;</div>
+            <div className="left">&nbsp;</div>
+            <Region alignment="center" reading={this.props.data.readings.south} descriptor={ this.props.data.descriptors.south }/>
+            <div className="right">&nbsp;</div>
           </div>        
         </div>
       );
     }
+});
+
+var Region = React.createClass({
+  render: function() {
+    return (
+      <div className={ this.props.alignment }>
+        { this.props.reading }
+        <div className="descriptor">{ this.props.descriptor }</div>
+      </div>      
+    );
+  }
 });
 
 React.render(
