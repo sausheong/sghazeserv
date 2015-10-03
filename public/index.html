@@ -3,21 +3,59 @@
   <head>
     <meta charset="utf-8">
     <title>Singapore Haze Watch</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <link rel="stylesheet" href="leaflet.label.css" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+    <script type="text/babel" src="leaflet.label.js"></script> 
   	<style>
   	body {
-  	  padding-top: 60px;
-  	  padding-bottom: 40px;
   	  background-color: #fff;
       font-family: Verdana, Geneva, sans-serif;
+      margin: 0;
   	}
   
+    .leaflet-label {
+      background: none;
+      border: none;
+    }
+    .psi-container {
+      position: absolute;
+      background-color: #eee;
+      padding: 10px;
+      right: 10px;
+      z-index: 1;
+    }
     .psi {      
       font-size: 5em;
       text-align: center;
+      font-family: 'Roboto';
+    }
+    .good {
+      background-color: #4CAF50;
+      padding: 5px;
+    }
+    .moderate {
+      background-color: #2196f3;
+      padding: 5px;
+    }
+    .unhealthy {
+      background-color: #FFEB3B;
+      padding: 5px;
+    }
+    .very-unhealthy {
+      background-color: #FFC107;
+      padding: 5px;
+    }
+    .hazardous {
+      background-color: #F44336;
+      padding: 5px;
+    }
+    #map {
+      height: 100vh;
     }
      .map {
        width: 431px;
